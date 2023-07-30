@@ -1,0 +1,22 @@
+# Configuration File
+
+# Is hunger enabled ?
+hunger: false
+
+# How many arrows are we giving the arrow kit back
+arrows: 20
+
+# What gamemode should players be set to
+game-mode: "ADVENTURE"
+
+# Should we allow mobs to spawn?
+mobs: false
+ignore-mobs:
+  - ARMOR_STAND
+  - ENDER_CRYSTAL
+  - PLAYER
+
+# Join Title Message Time
+in: 1
+stay: 3
+out: 1

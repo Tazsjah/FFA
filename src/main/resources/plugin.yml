@@ -1,0 +1,24 @@
+main: me.Tazsjah.FFA.FFA
+author: Tazsjah
+name: FFA
+api-version: 1.18
+version: 1.0.0
+commands:
+  spawn:
+    description: Teleports player to spawn
+  setwarp:
+    description: Creates a new location to warp to
+    permission: ffa.admin
+  delwarp:
+    description: Deletes a current warp
+    permission: ffa.admin
+  heal:
+    description: Heals a player
+    permission: ffa.heal
+  top:
+    description: Teleports player to the highest block
+    permission: ffa.admin
+  warp:
+    description: Warps a player to a specific location
+  stats:
+    description: Shows the statistics for a player

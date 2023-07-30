@@ -1,0 +1,34 @@
+# These are the streak MileStones that will be announced
+streak-ms:
+  - 5
+  - 10
+  - 20
+  - 30
+  - 50
+  - 75
+  - 100
+
+# Death messages. Variables are $victim $killer $left
+kill-message: "&c$victim &7was killed by &c$killer &8(&c$left♥&8)"
+void-message: "&c$victim &7was killed by the void"
+fall-message: "&c$victim &7fell to their death"
+
+# Join & Leave message. Variable is $player
+join-message: "&c$player &7joined the game"
+leave-message: "&c$player &8left the game"
+
+# Title Messages
+title: "&c&lPvP&4&lTime &8&l» &e&lFFA"
+subtitle: "&7You are playing on &cpvptime.net"
+
+# Stats Command.
+# Variables are $player $kills $deaths $current-streak $highest-streak $kd
+stats:
+  - "&r"
+  - "&4» &7Showing stats for &c$player"
+  - "&r"
+  - "&7Kills &8: &c$kills"
+  - "&7Deaths &8: &c$deaths"
+  - "&7Top-Streak &8: &c$highest-streak"
+  - "&7K/D &8: &c$kd"
+  - "&r"
