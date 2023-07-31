@@ -6,20 +6,17 @@ import me.Tazsjah.Data.Messages;
 import me.Tazsjah.Data.PlayerData;
 import me.Tazsjah.Utils.PlayerUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EnderCrystal;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.block.data.type.RespawnAnchor;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -123,7 +120,10 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
-        event.getEntity().getInventory().clear();
+        if(config.getInv("clear-inventory")) {
+            event.getEntity().getInventory().clear();
+        }
+
         data.currentStreak.replace(event.getEntity().getUniqueId(), 0);
 
         if(playerKiller.containsKey(event.getEntity().getUniqueId())){
@@ -146,6 +146,9 @@ public class GameListener implements Listener {
             event.setDeathMessage(msgs.killMsg(event.getEntity(), killer, killer.getHealth()));
             utils.heal(killer);
             cause.remove(event.getEntity().getUniqueId());
+
+            data.updateScoreboard(event.getEntity());
+            data.updateScoreboard(killer);
 
             return;
         }
@@ -170,6 +173,9 @@ public class GameListener implements Listener {
             utils.heal(killer);
             cause.remove(event.getEntity().getUniqueId());
 
+            data.updateScoreboard(event.getEntity());
+            data.updateScoreboard(killer);
+
             killer.sendMessage(data.getStat(killer, "streak") + "Streak");
 
             return;
@@ -180,25 +186,14 @@ public class GameListener implements Listener {
             event.setDeathMessage(msgs.voidMsg(event.getEntity()));
             data.addStat(event.getEntity(), "death");
             cause.remove(event.getEntity().getUniqueId());
+            data.updateScoreboard(event.getEntity());
         }
 
         if(cause.get(event.getEntity().getUniqueId()) == EntityDamageEvent.DamageCause.FALL) {
             event.setDeathMessage(msgs.fallMsg(event.getEntity()));
             data.addStat(event.getEntity(), "death");
             cause.remove(event.getEntity().getUniqueId());
-        }
-    }
-
-    @EventHandler
-    public void onMobs(EntitySpawnEvent event) {
-        if(!(event.getEntity() instanceof Player)) {
-            if(!config.mobs()) {
-                if(!config.ignoredMobs().contains(event.getEntity().getType().toString())) {
-                    event.getEntity().remove();
-                    event.setCancelled(true);
-                }
-
-            }
+            data.updateScoreboard(event.getEntity());
         }
     }
 
@@ -207,7 +202,6 @@ public class GameListener implements Listener {
         event.getWorld().setClearWeatherDuration(0);
         event.setCancelled(true);
     }
-
 
 
 }

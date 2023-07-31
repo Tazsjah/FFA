@@ -5,6 +5,7 @@ import me.Tazsjah.Data.*;
 import me.Tazsjah.Listeners.GameListener;
 import me.Tazsjah.Listeners.PlayerListener;
 import me.Tazsjah.Utils.PlayerUtils;
+import me.Tazsjah.Utils.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,13 +31,15 @@ public class FFA extends JavaPlugin {
 
         Locations locations = new Locations();
         Messages messages = new Messages();
-        PlayerData stats = new PlayerData();
+        Sidebar bar = new Sidebar(messages);
+        PlayerData stats = new PlayerData(bar);
         PlayerUtils utils = new PlayerUtils();
         Spawn spawn = new Spawn(locations, messages);
 
+
         // Register Events
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(config, messages, stats, utils, locations), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(config, messages, stats, utils, locations, bar), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(stats, utils, locations, messages, config), this);
         Bukkit.getPluginManager().registerEvents(spawn, this);
 
@@ -53,6 +56,7 @@ public class FFA extends JavaPlugin {
         // Misc
 
         Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Enabling the FFA plugin by Tazsjah");
+        stats.initializeAll();
         
     }
 

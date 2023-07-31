@@ -2,6 +2,7 @@ package me.Tazsjah.Commands;
 
 import me.Tazsjah.Data.Locations;
 import me.Tazsjah.Data.Messages;
+import me.Tazsjah.Data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,6 +19,7 @@ public class Spawn implements CommandExecutor, Listener {
 
     Locations locations;
     Messages msgs;
+    PlayerData data;
 
     public Spawn(Locations locations, Messages msgs) {
         this.locations = locations;

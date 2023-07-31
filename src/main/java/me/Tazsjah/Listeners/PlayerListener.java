@@ -5,6 +5,7 @@ import me.Tazsjah.Data.Locations;
 import me.Tazsjah.Data.Messages;
 import me.Tazsjah.Data.PlayerData;
 import me.Tazsjah.Utils.PlayerUtils;
+import me.Tazsjah.Utils.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -27,12 +28,17 @@ public class PlayerListener implements Listener {
     PlayerUtils utils;
     Locations locations;
 
-    public PlayerListener(Config config, Messages msgs, PlayerData stats, PlayerUtils utils, Locations locations) {
+    Sidebar bar;
+
+    public PlayerListener(Config config, Messages msgs,
+                          PlayerData stats, PlayerUtils utils,
+                          Locations locations, Sidebar bar) {
         this.config = config;
         this.msgs = msgs;
         this.stats = stats;
         this.utils = utils;
         this.locations = locations;
+        this.bar = bar;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -49,8 +55,9 @@ public class PlayerListener implements Listener {
         event.getPlayer().sendTitle(msgs.title("title"), msgs.title("subtitle"), in , stay, out);
         event.getPlayer().teleport(locations.getLocation("spawn"));
 
-        if(!event.getPlayer().hasPermission("ffa.admin")){
+        stats.updateScoreboard(event.getPlayer());
 
+        if(!event.getPlayer().hasPermission("ffa.admin")){
             event.getPlayer().getInventory().clear();
         }
     }
@@ -74,13 +81,6 @@ public class PlayerListener implements Listener {
             if(player.getInventory().isEmpty()) {
                 event.setCancelled(true);
             }
-        }
-    }
-
-    @EventHandler
-    public void onDrop(PlayerDropItemEvent event) {
-        if(!event.getPlayer().hasPermission("ffa.drop")) {
-            event.setCancelled(true);
         }
     }
 

@@ -9,14 +9,10 @@ arrows: 20
 # What gamemode should players be set to
 game-mode: "ADVENTURE"
 
-# Should we allow mobs to spawn?
-mobs: false
-ignore-mobs:
-  - ARMOR_STAND
-  - ENDER_CRYSTAL
-  - PLAYER
+# Do you want to clear their inventories?
+clear-inventory: true
 
 # Join Title Message Time
 in: 1
-stay: 3
+stay: 7
 out: 1

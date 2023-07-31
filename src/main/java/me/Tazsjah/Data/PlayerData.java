@@ -1,5 +1,6 @@
 package me.Tazsjah.Data;
 
+import me.Tazsjah.Utils.Sidebar;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,6 +15,12 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class PlayerData {
+
+    Sidebar bar;
+
+    public PlayerData(Sidebar bar) {
+        this.bar = bar;
+    }
 
     public HashMap<UUID, Integer> currentStreak = new HashMap<>();
 
@@ -59,17 +66,17 @@ public class PlayerData {
             playerfile.set("deaths", death + 1);
         }
         if(s == "streak") {
-            if(currentStreak.get(player.getUniqueId()) == null) {
+            if(currentStreak.get(player.getUniqueId()) == 0) {
                 currentStreak.put(player.getUniqueId(), 1);
             } else {
                 int streak = currentStreak.get(player.getUniqueId());
                 int top = playerfile.getInt("top-streak");
 
-                if(streak >= top) {
-                    playerfile.set("top-streak", streak);
-                }
-
                 currentStreak.put(player.getUniqueId(), streak + 1);
+
+                if(streak >= top) {
+                    playerfile.set("top-streak", streak + 1);
+                }
             }
         }
 
@@ -111,6 +118,25 @@ public class PlayerData {
 
     public void announceStreak(Player p) {
 
+    }
+
+    public void initializeAll() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            newPlayer(player);
+        }
+    }
+
+    public void updateScoreboard(Player player) {
+        int kills = getStat(player, "kills");
+        int deaths = getStat(player, "deaths");
+        String kd = kd(player);
+        int tops = getStat(player, "topstreak");
+
+        if(currentStreak.get(player.getUniqueId()) == 0) {
+            bar.setScore(player, kills, deaths, tops, kd, 0);
+            return;
+        }
+        bar.setScore(player, kills, deaths, tops, kd, currentStreak.get(player.getUniqueId()));
     }
 
     public String kd(Player player) {

@@ -43,16 +43,8 @@ public class Config {
         return 0;
     }
 
-    public Boolean mobs() {
-        return config.getBoolean("mobs");
+    public Boolean getInv(String s) {
+        return config.getBoolean(s);
     }
-
-    public List<String> ignoredMobs(){
-        return config.getStringList("ignored-mobs");
-    }
-
-
-
-
 
 }

@@ -18,7 +18,7 @@ join-message: "&c$player &7joined the game"
 leave-message: "&c$player &8left the game"
 
 # Title Messages
-title: "&c&lPvP&4&lTime &8&l» &e&lFFA"
+title: "&c&lPvP&4&lTime &8&l» &e&lCrystal FFA"
 subtitle: "&7You are playing on &cpvptime.net"
 
 # Stats Command.
@@ -32,3 +32,30 @@ stats:
   - "&7Top-Streak &8: &c$highest-streak"
   - "&7K/D &8: &c$kd"
   - "&r"
+
+# These are the variables for the scoreboard
+# Variables are $kills $deaths $current-streak $highest-streak $kd
+scoreboard:
+  title: "&c&lPvP&4&lTime &8» &e&lC-FFA   "
+  without-streak-board:
+    - "&a"
+    - "&7Player&8: &c$player"
+    - "&r"
+    - "&7Kills&8: &c$kills"
+    - "&7Deaths&8: &c$deaths"
+    - "&7KDR&8: &c$kdr"
+    - "&7H-Streak&8: &c$highest-streak"
+    - "&r&r"
+    - "&7play.pvptime.net"
+  with-streak-board:
+    - "&a"
+    - "&7Player&8: &c$player"
+    - "&r"
+    - "&7Kills&8: &c$kills"
+    - "&7Deaths&8: &c$deaths"
+    - "&7KDR&8: &c$kdr"
+    - "&7H-Streak&8: &c$highest-streak"
+    - "&r&r"
+    - "&4Streak &8» &6$current-streak"
+    - "&r&r&r"
+    - "&7play.pvptime.net"

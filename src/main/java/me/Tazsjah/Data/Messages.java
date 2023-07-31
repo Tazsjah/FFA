@@ -5,6 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class Messages {
 
 
     public List<Integer> streaks() {
-       return (List<Integer>) msgs.get("streak-ms");
+        return (List<Integer>) msgs.get("streak-ms");
     }
 
     public String killMsg(Player v, Player k, Double f) { // Variables are $victim | $left | $killer
@@ -62,6 +64,42 @@ public class Messages {
                     .replace("$kd", kd + "")));
         }
         return v2;
+    }
+
+    public String get(String s) {
+        return ChatColor.translateAlternateColorCodes('&', msgs.getString(s));
+    }
+
+
+    public List<String> scoreboard(Player player, Integer kills, Integer deaths, Integer tops, String kd, Integer streak) {
+        if(streak == 0) {
+            List<String> scorelist = new ArrayList<>();
+            for(String s : msgs.getStringList("scoreboard.without-streak-board")) {
+                scorelist.add(ChatColor.translateAlternateColorCodes('&',
+                        s.replace("$player", player.getName())
+                                .replace("$kills", kills + "")
+                                .replace("$deaths", deaths + "")
+                                .replace("$kdr", kd)
+                                .replace("$highest-streak", tops + "")
+                ));
+            }
+
+            return scorelist;
+
+        }
+
+        List<String> scorelist = new ArrayList<>();
+        for(String s : msgs.getStringList("scoreboard.with-streak-board")) {
+            scorelist.add(ChatColor.translateAlternateColorCodes('&',
+                    s.replace("$player", player.getName())
+                            .replace("$kills", kills + "")
+                            .replace("$deaths", deaths + "")
+                            .replace("$kdr", kd)
+                            .replace("$highest-streak", tops + "")
+                            .replace("$current-streak", streak + "")
+            ));
+        }
+        return scorelist;
     }
 
 
