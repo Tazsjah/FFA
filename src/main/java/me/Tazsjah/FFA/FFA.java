@@ -35,6 +35,8 @@ public class FFA extends JavaPlugin {
         PlayerData stats = new PlayerData(bar);
         PlayerUtils utils = new PlayerUtils();
         Spawn spawn = new Spawn(locations, messages);
+        Kits kits = new Kits(messages);
+
 
 
         // Register Events
@@ -52,6 +54,9 @@ public class FFA extends JavaPlugin {
         Bukkit.getPluginCommand("warp").setExecutor(new Warp(messages, locations));
         Bukkit.getPluginCommand("top").setExecutor(new Top(utils));
         Bukkit.getPluginCommand("stats").setExecutor(new Stats(messages, stats));
+        Bukkit.getPluginCommand("createkit").setExecutor(new KitCreate(kits));
+        Bukkit.getPluginCommand("kit").setExecutor(new Kit(kits));
+        Bukkit.getPluginCommand("delkit").setExecutor(new DelKit(kits));
 
         // Misc
 

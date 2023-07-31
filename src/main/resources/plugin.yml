@@ -22,3 +22,12 @@ commands:
     description: Warps a player to a specific location
   stats:
     description: Shows the statistics for a player
+  createkit:
+    description: Creates a kit
+    permission: ffa.admin
+  kit:
+    description: Gives a kit to you or a user
+    permission: ffa.admin
+  delkit:
+    description: Deletes a kit
+    permission: ffa.admin

@@ -59,3 +59,6 @@ scoreboard:
     - "&4Streak &8» &6$current-streak"
     - "&r&r&r"
     - "&7play.pvptime.net"
+
+# Kit messages
+received-kit: "&7You have received the kit &c$kit"
