@@ -128,37 +128,30 @@ public class Kits {
         FileConfiguration kit = YamlConfiguration.loadConfiguration(kitfile);
 
         if(!kitfile.exists()){
-            if(p.getInventory().getArmorContents() != null) { // This sets the armor for the kit
-                if(p.getInventory().getHelmet() != null) {
-                    kit.set("helmet", p.getInventory().getHelmet());
-                }
-                if(p.getInventory().getChestplate() != null){
-                    kit.set("chestplate", p.getInventory().getChestplate());
-                }
-                if(p.getInventory().getLeggings() != null) {
-                    kit.set("leggings", p.getInventory().getLeggings());
-                }
-                if(p.getInventory().getBoots() != null) {
-                    kit.set("boots", p.getInventory().getBoots());
-                }
+            p.getInventory().getArmorContents();// This sets the armor for the kit
+
+            if(p.getInventory().getHelmet() != null) {
+                kit.set("helmet", p.getInventory().getHelmet());
+            }
+            if(p.getInventory().getChestplate() != null){
+                kit.set("chestplate", p.getInventory().getChestplate());
+            }
+            if(p.getInventory().getLeggings() != null) {
+                kit.set("leggings", p.getInventory().getLeggings());
+            }
+            if(p.getInventory().getBoots() != null) {
+                kit.set("boots", p.getInventory().getBoots());
             }
 
             Inventory inv = p.getInventory();
             ArrayList<ItemStack> kititems = new ArrayList<ItemStack>();
             for(ItemStack i : inv.getContents()){
                 if(i != null) {
-
-                    if(i.getType().toString().endsWith("_HELMET")
-                            || i.getType().toString().endsWith("_CHESTPLATE")
-                            || i.getType().toString().endsWith("_LEGGINGS")
-                            || i.getType().toString().endsWith("_BOOTS")) { return;}
-
                     kititems.add(i);
                 }
             }
 
             kit.set("items", kititems);
-
 
         }
         try {
