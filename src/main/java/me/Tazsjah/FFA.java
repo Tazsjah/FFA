@@ -1,8 +1,9 @@
-package me.Tazsjah.FFA;
+package me.Tazsjah;
 
 import me.Tazsjah.Commands.*;
 import me.Tazsjah.Data.*;
 import me.Tazsjah.Listeners.GameListener;
+import me.Tazsjah.Listeners.MapListener;
 import me.Tazsjah.Listeners.PlayerListener;
 import me.Tazsjah.Utils.PlayerUtils;
 import me.Tazsjah.Utils.Sidebar;
@@ -18,9 +19,7 @@ public class FFA extends JavaPlugin {
         // Create default files
 
         File f = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder(), "config.yml");
-
         File m = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder(), "messages.yml");
-
 
         if(!f.exists()) {this.saveResource("config.yml", false);}
         if(!m.exists()) {this.saveResource("messages.yml", false);}
@@ -36,14 +35,15 @@ public class FFA extends JavaPlugin {
         PlayerUtils utils = new PlayerUtils();
         Spawn spawn = new Spawn(locations, messages);
         Kits kits = new Kits(messages);
-
-
+        MapRegen mapregen = new MapRegen(config, messages, locations);
+        Inventory inv = new Inventory(messages);
 
         // Register Events
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(config, messages, stats, utils, locations, bar), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(stats, utils, locations, messages, config), this);
         Bukkit.getPluginManager().registerEvents(spawn, this);
+        Bukkit.getPluginManager().registerEvents(new MapListener(mapregen), this);
 
         // Register Commands
 
@@ -57,11 +57,14 @@ public class FFA extends JavaPlugin {
         Bukkit.getPluginCommand("createkit").setExecutor(new KitCreate(kits));
         Bukkit.getPluginCommand("kit").setExecutor(new Kit(kits));
         Bukkit.getPluginCommand("delkit").setExecutor(new DelKit(kits));
+        Bukkit.getPluginCommand("setinv").setExecutor(new SetInv(inv));
+        Bukkit.getPluginCommand("openinv").setExecutor(new OpenInv(inv));
 
         // Misc
 
         Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Enabling the FFA plugin by Tazsjah");
         stats.initializeAll();
+        mapregen.startMapTime();
         
     }
 

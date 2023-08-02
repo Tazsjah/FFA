@@ -1,4 +1,4 @@
-main: me.Tazsjah.FFA.FFA
+main: me.Tazsjah.FFA
 author: Tazsjah
 name: FFA
 api-version: 1.18
@@ -31,3 +31,8 @@ commands:
   delkit:
     description: Deletes a kit
     permission: ffa.admin
+  setinv:
+    description: Sets the inventory for the server
+    permission: ffa.admin
+  openinv:
+    description: Opens the inventory for the player

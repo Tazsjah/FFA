@@ -9,6 +9,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +101,14 @@ public class Messages {
             ));
         }
         return scorelist;
+    }
+
+    public String getActionbar(int i) {
+        Duration duration = Duration.ofSeconds(i);
+        String d = duration + "";
+        return ChatColor.translateAlternateColorCodes
+                ('&', msgs.getString("action-bar").replace("$secs", d.replace("PT", "")
+                .replace("M", "m ").replace("S", "s ")));
     }
 
 

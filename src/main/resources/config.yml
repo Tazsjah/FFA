@@ -16,3 +16,10 @@ clear-inventory: true
 in: 1
 stay: 7
 out: 1
+
+# Map Regen Time
+regen-map: 900
+
+# Ignore these blocks for placement
+ignored-placed:
+  - RESPAWN_ANCHOR

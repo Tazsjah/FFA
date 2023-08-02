@@ -62,3 +62,9 @@ scoreboard:
 
 # Kit messages
 received-kit: "&7You have received the kit &c$kit"
+
+# Actionbar
+action-bar: "&7Reset Map &8» &c$secs"
+
+# The prefix for opening shops
+shop-prefix: "&0&lShop &8» &c"

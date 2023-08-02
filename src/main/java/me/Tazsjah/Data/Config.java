@@ -3,10 +3,8 @@ package me.Tazsjah.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
@@ -45,6 +43,14 @@ public class Config {
 
     public Boolean getInv(String s) {
         return config.getBoolean(s);
+    }
+
+    public Object get(String s) {
+        return config.get(s);
+    }
+
+    public List getList(String s) {
+        return config.getList(s);
     }
 
 }
