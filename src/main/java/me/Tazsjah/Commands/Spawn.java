@@ -4,6 +4,7 @@ import me.Tazsjah.Data.Combat;
 import me.Tazsjah.Data.Locations;
 import me.Tazsjah.Data.Messages;
 import me.Tazsjah.Data.PlayerData;
+import me.Tazsjah.Utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,13 +21,14 @@ public class Spawn implements CommandExecutor, Listener {
     Locations locations;
     Messages msgs;
     PlayerData data;
-
+    PlayerUtils utils;
     Combat combat;
 
-    public Spawn(Locations locations, Messages msgs, Combat combat) {
+    public Spawn(Locations locations, Messages msgs, Combat combat, PlayerUtils utils) {
         this.locations = locations;
         this.msgs = msgs;
         this.combat = combat;
+        this.utils = utils;
     }
 
     @Override
@@ -38,6 +40,7 @@ public class Spawn implements CommandExecutor, Listener {
 
                 if (locations.checkLocation("spawn")) {
                     ((Player) sender).teleport(locations.getLocation("spawn"));
+                    utils.heal(player);
                 } else {
                     sender.sendMessage(ChatColor.RED + "Spawn does not exist. Please set it using /setspawn");
                 }
@@ -46,6 +49,7 @@ public class Spawn implements CommandExecutor, Listener {
 
             if (locations.checkLocation("spawn")) {
                 ((Player) sender).teleport(locations.getLocation("spawn"));
+                utils.heal(player);
             } else {
                 sender.sendMessage(ChatColor.RED + "Spawn does not exist. Please set it using /setspawn");
             }

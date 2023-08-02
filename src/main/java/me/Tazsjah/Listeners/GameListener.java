@@ -1,10 +1,17 @@
 package me.Tazsjah.Listeners;
 
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.Tazsjah.Data.*;
 import me.Tazsjah.Utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -12,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +33,6 @@ public class GameListener implements Listener {
     Locations locations;
     Messages msgs;
     Config config;
-
     Combat combat;
 
     public GameListener(PlayerData data, PlayerUtils utils, Locations locations, Messages msgs, Config config, Combat combat) {
@@ -69,6 +76,8 @@ public class GameListener implements Listener {
         blockOwner.remove(event.getBlock().getLocation());
     }
 
+    WorldGuard wg = WorldGuard.getInstance();
+
     @EventHandler
     public void onHit(EntityDamageByEntityEvent event){
         if(event.getEntity() instanceof EnderCrystal){
@@ -83,23 +92,30 @@ public class GameListener implements Listener {
         }
         if(event.getEntity() instanceof Player p) {
 
-            combat.tag(p);
+            LocalPlayer lp = WorldGuardPlugin.inst().wrapPlayer(p);
+            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
 
-            if(event.getDamager() instanceof EnderCrystal){
-                playerKiller.put(event.getEntity().getUniqueId(), event.getDamager());
-            }
+            if(!query.testState(lp.getLocation(), lp, Flags.INVINCIBILITY)) {
+                combat.tag(p);
 
-            if(event.getDamager() instanceof Player) {
-                combat.tag((Player) event.getDamager());
-                regularKiller.put(event.getEntity().getUniqueId(), event.getDamager().getUniqueId());
-            }
 
-            if(event.getDamager() instanceof Arrow) {
-                Arrow arrow = (Arrow) event.getDamager();
-                Player killer = (Player) arrow.getShooter();
+                if (event.getDamager() instanceof EnderCrystal) {
+                    playerKiller.put(event.getEntity().getUniqueId(), event.getDamager());
+                }
 
-                regularKiller.put(event.getEntity().getUniqueId(), killer.getUniqueId());
-                combat.tag(killer);
+                if (event.getDamager() instanceof Player) {
+                    combat.tag((Player) event.getDamager());
+                    regularKiller.put(event.getEntity().getUniqueId(), event.getDamager().getUniqueId());
+                }
+
+                if (event.getDamager() instanceof Arrow) {
+                    Arrow arrow = (Arrow) event.getDamager();
+                    Player killer = (Player) arrow.getShooter();
+
+                    regularKiller.put(event.getEntity().getUniqueId(), killer.getUniqueId());
+                    combat.tag(killer);
+                }
             }
 
         }
@@ -200,6 +216,14 @@ public class GameListener implements Listener {
     public void onWeatherChange(WeatherChangeEvent event) {
         event.getWorld().setClearWeatherDuration(0);
         event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        if(regularKiller.get(event.getPlayer().getUniqueId()) != null) {
+            Player killer = Bukkit.getPlayer(regularKiller.get(event.getPlayer().getUniqueId()));
+        }
+        event.setQuitMessage(msgs.leaveMsg(event.getPlayer()));
     }
 
 

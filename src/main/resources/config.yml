@@ -28,7 +28,7 @@ stay: 7
 out: 1
 
 # Map Regen Time
-regen-map: 900
+regen-map: 300
 
 # Ignore these blocks for placement
 ignored-placed:

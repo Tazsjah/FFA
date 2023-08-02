@@ -3,6 +3,7 @@ author: Tazsjah
 name: FFA
 api-version: 1.18
 version: 1.0.0
+depend: [WorldGuard]
 commands:
   spawn:
     description: Teleports player to spawn

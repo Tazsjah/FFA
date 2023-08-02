@@ -12,6 +12,7 @@ public class PlayerUtils {
         player.getActivePotionEffects().clear();
         player.setHealth(20);
         player.setFoodLevel(20);
+        player.setFireTicks(0);
     }
 
     public void teleportTop(Player player) {

@@ -1,6 +1,9 @@
 package me.Tazsjah.Listeners;
 
+import me.Tazsjah.Data.Locations;
 import me.Tazsjah.Data.MapRegen;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -10,22 +13,22 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MapListener implements Listener {
 
-
     MapRegen mapregen;
+    Locations locations;
 
-    public MapListener(MapRegen mapregen) {
+    public MapListener(MapRegen mapregen, Locations locations) {
         this.mapregen = mapregen;
+        this.locations = locations;
     }
-
-
 
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
+
+        Location spawn = locations.getLocation("spawn");
+        if(event.getBlockPlaced().getY() < spawn.getY()) { return; }
+
         if(!mapregen.placed.contains(event.getBlockPlaced())) {
             if(!mapregen.config.getList("ignored-placed").contains(event.getBlock().getType())) {
                 mapregen.placed.add(event.getBlockPlaced());
@@ -38,7 +41,7 @@ public class MapListener implements Listener {
         event.setYield(0);
         for (Block block : event.blockList()) {
             if(!mapregen.exploded.contains(block)) {
-                if(block.getType() != Material.AIR) {
+                if(block.getType() != Material.AIR && block.getType() != Material.FIRE) {
                     mapregen.exploded.add(block.getWorld().getName() + "/" + block.getX() + "/" + block.getY() + "/" + block.getZ()  + ":" + block.getType());
                 }
             }
@@ -47,6 +50,8 @@ public class MapListener implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
+        Location spawn = locations.getLocation("spawn");
+        if(event.getBlock().getY() < spawn.getY()) { return; }
         if(!mapregen.broken.contains(event.getBlock())) {
             mapregen.broken.add(event.getBlock().getWorld().getName() + "/" + event.getBlock().getX() + "/" + event.getBlock().getY() + "/" + event.getBlock().getZ() + ":" + event.getBlock().getType());
         }

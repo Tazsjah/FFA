@@ -149,22 +149,24 @@ public class Kits {
                 if(i != null) {
 
                     if(i.getType().toString().endsWith("_HELMET")
-                    || i.getType().toString().endsWith("_CHESTPLATE")
-                    || i.getType().toString().endsWith("_LEGGINGS")
-                    || i.getType().toString().endsWith("_BOOTS")) { return;}
+                            || i.getType().toString().endsWith("_CHESTPLATE")
+                            || i.getType().toString().endsWith("_LEGGINGS")
+                            || i.getType().toString().endsWith("_BOOTS")) { return;}
 
                     kititems.add(i);
                 }
             }
+
             kit.set("items", kititems);
 
-            try {
-                kit.save(kitfile);
-                p.sendMessage(ChatColor.GREEN + "Created kit!");
-            } catch (IOException e) {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not create kit");
-                throw new RuntimeException(e);
-            }
+
+        }
+        try {
+            kit.save(kitfile);
+            p.sendMessage(ChatColor.GREEN + "Created kit!");
+        } catch (IOException e) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not create kit");
+            throw new RuntimeException(e);
         }
     }
     public void getPlayerKit(Player player) {
@@ -195,16 +197,13 @@ public class Kits {
 
             if(kit.get("items") != null) {
                 List<ItemStack> items = (List<ItemStack>) kit.getList("items");
-
                 for(ItemStack i : items) {
                     if(i.getType().toString().endsWith("_HELMET")
                             || i.getType().toString().endsWith("_CHESTPLATE")
                             || i.getType().toString().endsWith("_LEGGINGS")
                             || i.getType().toString().endsWith("_BOOTS")) { return;}
-
                     player.getInventory().addItem(i);
                 }
-
             }
 
         } else {

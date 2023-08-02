@@ -23,12 +23,12 @@ public class SetInv implements CommandExecutor {
             if(!player.hasPermission("ffa.admin")) { sender.sendMessage(ChatColor.RED  + "You have no permission for this");return true;}
             if(args.length == 0) { sender.sendMessage(ChatColor.RED  + "You must include a name for the inventory.");return true; }
             if(player.getTargetBlock(null, 5).getType() == Material.CHEST) {
-                if(inv.invExists(args[0])) {
+                if(!inv.invExists(args[0])) {
                     Chest chest = (Chest) player.getTargetBlock(null, 5).getState();
                     org.bukkit.inventory.Inventory inventory = chest.getInventory();
                     inv.saveInventory(player, args[0], inventory);
                 } else {
-                    sender.sendMessage(ChatColor.RED + "That inventory does not exist.");
+                    sender.sendMessage(ChatColor.RED + "Inventory exists already");
                 }
             } else {
                 sender.sendMessage("You must be looking at a chest for this");

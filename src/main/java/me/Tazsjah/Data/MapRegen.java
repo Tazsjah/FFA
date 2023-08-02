@@ -1,5 +1,6 @@
 package me.Tazsjah.Data;
 
+import me.Tazsjah.Utils.PlayerUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -19,14 +20,16 @@ public class MapRegen {
     public Config config;
     Messages msgs;
     Locations locs;
+    PlayerUtils util;
 
     Combat combat;
 
-    public MapRegen(Config config, Messages msgs, Locations locs, Combat combat) {
+    public MapRegen(Config config, Messages msgs, Locations locs, Combat combat, PlayerUtils util) {
         this.config = config;
         this.msgs = msgs;
         this.locs = locs;
         this.combat = combat;
+        this.util = util;
     }
 
     public List<Block> placed = new ArrayList<>();
@@ -51,12 +54,13 @@ public class MapRegen {
         }
 
         for(String block : exploded) {
-                String[] blockinfo = block.split(":");
-                String[] blockloc = blockinfo[0].split("/");
-                Location loc = new Location(Bukkit.getWorld(blockloc[0]), parseInt(blockloc[1]), parseInt(blockloc[2]), parseInt(blockloc[3]));
-                Material mat = Material.getMaterial(blockinfo[1]);
 
-                loc.getBlock().setType(mat);
+            String[] blockinfo = block.split(":");
+            String[] blockloc = blockinfo[0].split("/");
+            Location loc = new Location(Bukkit.getWorld(blockloc[0]), parseInt(blockloc[1]), parseInt(blockloc[2]), parseInt(blockloc[3]));
+            Material mat = Material.getMaterial(blockinfo[1]);
+
+            loc.getBlock().setType(mat);
         }
     }
 
@@ -69,23 +73,24 @@ public class MapRegen {
     public void warpPlayers() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(locs.getLocation("spawn"));
+            util.heal(player);
         }
     }
 
     public void startTime() {
-       new BukkitRunnable() {
-           @Override
-           public void run() {
-               if(mapTime != 0) {
-                   mapTime--;
-                   updateActionbar();
-               } else {
-                   warpPlayers();
-                   restoreBlocks();
-                   mapTime = (int) config.get("regen-map");
-               }
-           }
-       }.runTaskTimer(Bukkit.getPluginManager().getPlugin("FFA"), 0, 20);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(mapTime != 0) {
+                    mapTime--;
+                    updateActionbar();
+                } else {
+                    warpPlayers();
+                    restoreBlocks();
+                    mapTime = (int) config.get("regen-map");
+                }
+            }
+        }.runTaskTimer(Bukkit.getPluginManager().getPlugin("FFA"), 0, 20);
     }
 
     public void updateActionbar() {

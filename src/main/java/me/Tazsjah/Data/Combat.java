@@ -19,6 +19,12 @@ public class Combat {
         this.msgs = msgs;
     }
 
+//    public String s = "";
+//
+//    public void createConfig() {
+//        s = (String) config.get("f");
+//    }
+
     HashMap<UUID, Integer> time = new HashMap<>();
     HashMap<UUID, Boolean> inCombat = new HashMap<>();
 
@@ -33,9 +39,7 @@ public class Combat {
             @Override
             public void run() {
                 if(time.get(p.getUniqueId()) != null) {
-                    p.sendMessage("Timer started");
                     if(time.get(p.getUniqueId()) > 0) {
-                        p.sendMessage("You are in combat for " + time.get(p.getUniqueId()));
                         inCombat.replace(p.getUniqueId(), true);
                         int x = time.get(p.getUniqueId());
                         time.replace(p.getUniqueId(), x - 1);
@@ -46,7 +50,8 @@ public class Combat {
                         this.cancel();
                     }
                 } else {
-                    p.sendMessage("Timer Cancelled");
+                    inCombat.replace(p.getUniqueId(), false);
+                    time.remove(p.getUniqueId());
                     this.cancel();
                 }
             }
@@ -61,17 +66,24 @@ public class Combat {
             time.put(player.getUniqueId(), (Integer) config.get("combat-time"));
             inCombat.put(player.getUniqueId(), true);
             startTimer(player);
-        } else {
+        }
+
+        if(inCombat.get(player.getUniqueId()) == false){
             inCombat.put(player.getUniqueId(), true);
             time.put(player.getUniqueId(), (Integer) config.get("combat-time"));
+            startTimer(player);
+            return;
         }
+
+        time.put(player.getUniqueId(), (Integer) config.get("combat-time"));
+        inCombat.put(player.getUniqueId(), true);
+
     }
 
     public Boolean inCombat(Player player) {
         if(inCombat.get(player.getUniqueId()) == null) {
             return false;
         }
-
         if(inCombat.get(player.getUniqueId())) {
             return true;
         }

@@ -18,12 +18,9 @@ public class OpenInv implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(!sender.hasPermission("ffa.admin")) { sender.sendMessage(ChatColor.RED  + "You have no permission for this");return true;}
-
         if(args.length == 0) { sender.sendMessage(ChatColor.RED  + "You must include a name for the inventory.");return true; }
 
         inv.getInventory((Player) sender, args[0].toLowerCase());
-
 
         return false;
     }
