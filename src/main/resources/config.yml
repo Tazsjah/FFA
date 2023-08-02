@@ -17,7 +17,7 @@ hunger: false
 arrows: 20
 
 # What gamemode should players be set to
-game-mode: "ADVENTURE"
+game-mode: "SURVIVAL"
 
 # Do you want to clear their inventories?
 clear-inventory: true
@@ -33,3 +33,6 @@ regen-map: 900
 # Ignore these blocks for placement
 ignored-placed:
   - RESPAWN_ANCHOR
+
+# Combat Log ( In seconds )
+combat-time: 7

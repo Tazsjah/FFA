@@ -1,20 +1,14 @@
 package me.Tazsjah.Listeners;
 
-import me.Tazsjah.Data.Config;
-import me.Tazsjah.Data.Locations;
-import me.Tazsjah.Data.Messages;
-import me.Tazsjah.Data.PlayerData;
+import me.Tazsjah.Data.*;
 import me.Tazsjah.Utils.PlayerUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -30,15 +24,17 @@ public class GameListener implements Listener {
     PlayerUtils utils;
     Locations locations;
     Messages msgs;
-
     Config config;
 
-    public GameListener(PlayerData data, PlayerUtils utils, Locations locations, Messages msgs, Config config) {
+    Combat combat;
+
+    public GameListener(PlayerData data, PlayerUtils utils, Locations locations, Messages msgs, Config config, Combat combat) {
         this.data = data;
         this.utils = utils;
         this.locations = locations;
         this.msgs = msgs;
         this.config = config;
+        this.combat = combat;
     }
 
 
@@ -87,11 +83,14 @@ public class GameListener implements Listener {
         }
         if(event.getEntity() instanceof Player p) {
 
+            combat.tag(p);
+
             if(event.getDamager() instanceof EnderCrystal){
                 playerKiller.put(event.getEntity().getUniqueId(), event.getDamager());
             }
 
             if(event.getDamager() instanceof Player) {
+                combat.tag((Player) event.getDamager());
                 regularKiller.put(event.getEntity().getUniqueId(), event.getDamager().getUniqueId());
             }
 
@@ -100,6 +99,7 @@ public class GameListener implements Listener {
                 Player killer = (Player) arrow.getShooter();
 
                 regularKiller.put(event.getEntity().getUniqueId(), killer.getUniqueId());
+                combat.tag(killer);
             }
 
         }
@@ -108,6 +108,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
+
         if(event.getEntity() instanceof Player player) {
             if(cause.containsKey(player.getUniqueId())) {
                 cause.replace(player.getUniqueId(), event.getCause());
@@ -175,8 +176,6 @@ public class GameListener implements Listener {
 
             data.updateScoreboard(event.getEntity());
             data.updateScoreboard(killer);
-
-            killer.sendMessage(data.getStat(killer, "streak") + "Streak");
 
             return;
 

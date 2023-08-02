@@ -123,8 +123,11 @@ public class PlayerData {
     } // Get statistics for players
 
     public void announceStreak(Player p) {
-        if(config.getList("streak-ms").contains(getStat(p, "streak-ms"))) {
-            Bukkit.broadcastMessage(msgs.get("streak-ms").replace("$player", p.getName()).replace("$streak", getStat(p, "streak-ms") + ""));
+        if(config.getList("streak-ms").contains(getStat(p, "streak"))) {
+            for (Object s : msgs.getList("streak-msg")) {
+                String l = (String) s;
+                Bukkit.broadcastMessage(l.replace("$player", p.getName()).replace("$streak", getStat(p, "streak") + ""));
+            }
         }
     }
 
@@ -148,21 +151,15 @@ public class PlayerData {
     }
 
     public String kd(Player player) {
-        File f = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder() + "/Players/", player.getUniqueId() + ".yml");
-        FileConfiguration playerfile = YamlConfiguration.loadConfiguration(f);
-        if(!f.exists()) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not get stats for " + player.getName() + " [" + player.getUniqueId() + "]");
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "File does not exist");
-        }
 
         DecimalFormat df = new DecimalFormat("0.00");
-        if(playerfile.getInt("deaths") == 0) {
-            double kdrn = playerfile.getInt("kills");
+        if(getStat(player,"deaths") == 0) {
+            double kdrn = getStat(player, "kills");
             df.setRoundingMode(RoundingMode.DOWN);
             String kdrn2 = df.format(kdrn);
             return kdrn2;
         } else {
-            double kdrn = playerfile.getInt("kills") / playerfile.getInt("deaths");
+            double kdrn = (double) getStat(player, "kills") / getStat(player, "deaths");
             df.setRoundingMode(RoundingMode.DOWN);
             String kdrn2 = df.format(kdrn);
             return kdrn2;

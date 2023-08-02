@@ -23,10 +23,12 @@ public class PlayerListener implements Listener {
     Locations locations;
     Kits kits;
     Sidebar bar;
+    Combat combat;
 
     public PlayerListener(Config config, Messages msgs,
                           PlayerData stats, PlayerUtils utils,
-                          Locations locations, Sidebar bar, Kits kits) {
+                          Locations locations, Sidebar bar,
+                          Kits kits, Combat combat) {
         this.config = config;
         this.msgs = msgs;
         this.stats = stats;
@@ -34,6 +36,7 @@ public class PlayerListener implements Listener {
         this.locations = locations;
         this.bar = bar;
         this.kits = kits;
+        this.combat = combat;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -41,6 +44,7 @@ public class PlayerListener implements Listener {
         event.setJoinMessage(msgs.joinMsg(event.getPlayer()));
         stats.newPlayer(event.getPlayer());
         utils.heal(event.getPlayer());
+        event.getPlayer().getInventory().clear();
         event.getPlayer().setGameMode(GameMode.valueOf(config.gamemode()));
 
         int in = config.title("in") * 20;
@@ -51,6 +55,10 @@ public class PlayerListener implements Listener {
         event.getPlayer().teleport(locations.getLocation("spawn"));
 
         stats.updateScoreboard(event.getPlayer());
+
+        if(kits.ownKit(event.getPlayer())) {
+            kits.getPlayerKit(event.getPlayer());
+        }
 
         if(!event.getPlayer().hasPermission("ffa.admin")){
             event.getPlayer().getInventory().clear();

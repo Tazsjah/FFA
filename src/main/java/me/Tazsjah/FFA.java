@@ -33,15 +33,17 @@ public class FFA extends JavaPlugin {
         Sidebar bar = new Sidebar(messages);
         PlayerData stats = new PlayerData(bar, config, messages);
         PlayerUtils utils = new PlayerUtils();
-        Spawn spawn = new Spawn(locations, messages);
+        Combat combat = new Combat(config, messages);
+        Spawn spawn = new Spawn(locations, messages, combat);
         Kits kits = new Kits(messages);
-        MapRegen mapregen = new MapRegen(config, messages, locations);
+        MapRegen mapregen = new MapRegen(config, messages, locations, combat);
         Inventory inv = new Inventory(messages);
+
 
         // Register Events
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(config, messages, stats, utils, locations, bar, kits), this);
-        Bukkit.getPluginManager().registerEvents(new GameListener(stats, utils, locations, messages, config), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(config, messages, stats, utils, locations, bar, kits, combat), this);
+        Bukkit.getPluginManager().registerEvents(new GameListener(stats, utils, locations, messages, config, combat), this);
         Bukkit.getPluginManager().registerEvents(spawn, this);
         Bukkit.getPluginManager().registerEvents(new MapListener(mapregen), this);
 

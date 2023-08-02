@@ -20,10 +20,13 @@ public class MapRegen {
     Messages msgs;
     Locations locs;
 
-    public MapRegen(Config config, Messages msgs, Locations locs) {
+    Combat combat;
+
+    public MapRegen(Config config, Messages msgs, Locations locs, Combat combat) {
         this.config = config;
         this.msgs = msgs;
         this.locs = locs;
+        this.combat = combat;
     }
 
     public List<Block> placed = new ArrayList<>();
@@ -87,6 +90,13 @@ public class MapRegen {
 
     public void updateActionbar() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if(combat.inCombat(player)) {
+                int x = combat.time.get(player.getUniqueId()) + 1;
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                        new TextComponent(msgs.get("action-bar-combat").replace("$time", x + "") + msgs.getActionbar(mapTime)));
+                return;
+            }
+
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(msgs.getActionbar(mapTime)));
         }
     }

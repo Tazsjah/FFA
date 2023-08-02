@@ -67,6 +67,15 @@ public class Messages {
         return v2;
     }
 
+    public List<String> getList(String s) {
+        List<String> nl = new ArrayList<>();
+
+        for(String string : msgs.getStringList(s)) {
+            nl.add(ChatColor.translateAlternateColorCodes('&', string));
+        }
+        return nl;
+    }
+
     public String get(String s) {
         return ChatColor.translateAlternateColorCodes('&', msgs.getString(s));
     }

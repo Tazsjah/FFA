@@ -55,9 +55,19 @@ received-kit: "&7You have received the kit &c$kit"
 
 # Actionbar
 action-bar: "&7Reset Map &8» &c$secs"
+action-bar-combat: "&7In Combat &8» &c$time &f | &r"
 
 # The prefix for opening shops
 shop-prefix: "&0&lShop &8» &c"
 
 # Streak Announcement
-streak-msg: "&r &8» &4$player &7is on a Kill Streak of &4$streak &8«"
+streak-msg:
+  - "&r"
+  - "&r &8» &4&k|&r&c$player&4&k|&r &7is on a Kill Streak of &4$streak &8«"
+  - "&r"
+
+# Combat Log Messages
+in-combat: "&7You are in combat and cannot perform this command"
+combat-tag: "&7You are now in combat"
+combat-untag: "&7You are no longer in combat"
+

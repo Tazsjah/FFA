@@ -1,5 +1,6 @@
 package me.Tazsjah.Commands;
 
+import me.Tazsjah.Data.Combat;
 import me.Tazsjah.Data.Locations;
 import me.Tazsjah.Data.Messages;
 import me.Tazsjah.Data.PlayerData;
@@ -12,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class Spawn implements CommandExecutor, Listener {
@@ -21,20 +21,34 @@ public class Spawn implements CommandExecutor, Listener {
     Messages msgs;
     PlayerData data;
 
-    public Spawn(Locations locations, Messages msgs) {
+    Combat combat;
+
+    public Spawn(Locations locations, Messages msgs, Combat combat) {
         this.locations = locations;
         this.msgs = msgs;
+        this.combat = combat;
     }
 
     @Override
 
     public boolean onCommand(CommandSender sender, Command command, String arg, String[] args) {
         if(sender instanceof Player player) {
-                if(locations.checkLocation("spawn")) {
+            if(combat.inCombat(player)) {
+                if(!player.hasPermission("ffa.bypass")) {player.sendMessage(msgs.get("in-combat"));return true;}
+
+                if (locations.checkLocation("spawn")) {
                     ((Player) sender).teleport(locations.getLocation("spawn"));
                 } else {
                     sender.sendMessage(ChatColor.RED + "Spawn does not exist. Please set it using /setspawn");
                 }
+                return false;
+            }
+
+            if (locations.checkLocation("spawn")) {
+                ((Player) sender).teleport(locations.getLocation("spawn"));
+            } else {
+                sender.sendMessage(ChatColor.RED + "Spawn does not exist. Please set it using /setspawn");
+            }
         } else {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "You must be a player to execute this");
         }
