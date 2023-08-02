@@ -1,13 +1,3 @@
-# These are the streak MileStones that will be announced
-streak-ms:
-  - 5
-  - 10
-  - 20
-  - 30
-  - 50
-  - 75
-  - 100
-
 # Death messages. Variables are $victim $killer $left
 kill-message: "&c$victim &7was killed by &c$killer &8(&c$left♥&8)"
 void-message: "&c$victim &7was killed by the void"
@@ -68,3 +58,6 @@ action-bar: "&7Reset Map &8» &c$secs"
 
 # The prefix for opening shops
 shop-prefix: "&0&lShop &8» &c"
+
+# Streak Announcement
+streak-msg: "&r &8» &4$player &7is on a Kill Streak of &4$streak &8«"

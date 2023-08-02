@@ -17,9 +17,13 @@ import java.util.UUID;
 public class PlayerData {
 
     Sidebar bar;
+    Config config;
+    Messages msgs;
 
-    public PlayerData(Sidebar bar) {
+    public PlayerData(Sidebar bar, Config config, Messages msgs) {
         this.bar = bar;
+        this.config = config;
+        this.msgs = msgs;
     }
 
     public HashMap<UUID, Integer> currentStreak = new HashMap<>();
@@ -74,6 +78,8 @@ public class PlayerData {
 
                 currentStreak.put(player.getUniqueId(), streak + 1);
 
+                announceStreak(player);
+
                 if(streak >= top) {
                     playerfile.set("top-streak", streak + 1);
                 }
@@ -117,7 +123,9 @@ public class PlayerData {
     } // Get statistics for players
 
     public void announceStreak(Player p) {
-
+        if(config.getList("streak-ms").contains(getStat(p, "streak-ms"))) {
+            Bukkit.broadcastMessage(msgs.get("streak-ms").replace("$player", p.getName()).replace("$streak", getStat(p, "streak-ms") + ""));
+        }
     }
 
     public void initializeAll() {

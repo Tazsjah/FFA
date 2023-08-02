@@ -36,3 +36,7 @@ commands:
     permission: ffa.admin
   openinv:
     description: Opens the inventory for the player
+  savekit:
+    description: Saves your custom kit for respawn
+  reset:
+    description: Resets your kit back to an empty kit

@@ -1,5 +1,15 @@
 # Configuration File
 
+# These are the streak MileStones that will be announced
+streak-ms:
+  - 5
+  - 10
+  - 20
+  - 30
+  - 50
+  - 75
+  - 100
+
 # Is hunger enabled ?
 hunger: false
 

@@ -31,7 +31,7 @@ public class FFA extends JavaPlugin {
         Locations locations = new Locations();
         Messages messages = new Messages();
         Sidebar bar = new Sidebar(messages);
-        PlayerData stats = new PlayerData(bar);
+        PlayerData stats = new PlayerData(bar, config, messages);
         PlayerUtils utils = new PlayerUtils();
         Spawn spawn = new Spawn(locations, messages);
         Kits kits = new Kits(messages);
@@ -40,7 +40,7 @@ public class FFA extends JavaPlugin {
 
         // Register Events
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(config, messages, stats, utils, locations, bar), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(config, messages, stats, utils, locations, bar, kits), this);
         Bukkit.getPluginManager().registerEvents(new GameListener(stats, utils, locations, messages, config), this);
         Bukkit.getPluginManager().registerEvents(spawn, this);
         Bukkit.getPluginManager().registerEvents(new MapListener(mapregen), this);
@@ -59,6 +59,8 @@ public class FFA extends JavaPlugin {
         Bukkit.getPluginCommand("delkit").setExecutor(new DelKit(kits));
         Bukkit.getPluginCommand("setinv").setExecutor(new SetInv(inv));
         Bukkit.getPluginCommand("openinv").setExecutor(new OpenInv(inv));
+        Bukkit.getPluginCommand("reset").setExecutor(new Reset(kits));
+        Bukkit.getPluginCommand("savekit").setExecutor(new SaveKit(kits));
 
         // Misc
 

@@ -1,9 +1,6 @@
 package me.Tazsjah.Listeners;
 
-import me.Tazsjah.Data.Config;
-import me.Tazsjah.Data.Locations;
-import me.Tazsjah.Data.Messages;
-import me.Tazsjah.Data.PlayerData;
+import me.Tazsjah.Data.*;
 import me.Tazsjah.Utils.PlayerUtils;
 import me.Tazsjah.Utils.Sidebar;
 import org.bukkit.Bukkit;
@@ -14,10 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerAdvancementDoneEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 
 public class PlayerListener implements Listener {
@@ -27,18 +21,19 @@ public class PlayerListener implements Listener {
     PlayerData stats;
     PlayerUtils utils;
     Locations locations;
-
+    Kits kits;
     Sidebar bar;
 
     public PlayerListener(Config config, Messages msgs,
                           PlayerData stats, PlayerUtils utils,
-                          Locations locations, Sidebar bar) {
+                          Locations locations, Sidebar bar, Kits kits) {
         this.config = config;
         this.msgs = msgs;
         this.stats = stats;
         this.utils = utils;
         this.locations = locations;
         this.bar = bar;
+        this.kits = kits;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -76,11 +71,10 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onDamage(EntityDamageEvent event) {
-        if(event.getEntity() instanceof Player player) {
-            if(player.getInventory().isEmpty()) {
-                event.setCancelled(true);
-            }
+    public void onRespawn(PlayerRespawnEvent event) {
+        if(kits.ownKit(event.getPlayer())) {
+            kits.getPlayerKit(event.getPlayer());
+            event.setRespawnLocation(locations.getLocation("spawn"));
         }
     }
 
