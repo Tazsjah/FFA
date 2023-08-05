@@ -27,7 +27,6 @@ public class MapListener implements Listener {
     public void onPlace(BlockPlaceEvent event) {
 
         Location spawn = locations.getLocation("spawn");
-        if(event.getBlockPlaced().getY() < spawn.getY()) { return; }
 
         if(!mapregen.placed.contains(event.getBlockPlaced())) {
             if(!mapregen.config.getList("ignored-placed").contains(event.getBlock().getType())) {
@@ -51,7 +50,6 @@ public class MapListener implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         Location spawn = locations.getLocation("spawn");
-        if(event.getBlock().getY() < spawn.getY()) { return; }
         if(!mapregen.broken.contains(event.getBlock())) {
             mapregen.broken.add(event.getBlock().getWorld().getName() + "/" + event.getBlock().getX() + "/" + event.getBlock().getY() + "/" + event.getBlock().getZ() + ":" + event.getBlock().getType());
         }

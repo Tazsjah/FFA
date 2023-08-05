@@ -39,5 +39,7 @@ commands:
     description: Opens the inventory for the player
   savekit:
     description: Saves your custom kit for respawn
-  reset:
-    description: Resets your kit back to an empty kit
+  remkit:
+    description: Removes a kit from your kits
+  setkit:
+    description: Sets the main kit to spawn with

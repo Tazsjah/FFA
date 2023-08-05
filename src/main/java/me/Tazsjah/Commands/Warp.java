@@ -22,7 +22,7 @@ public class Warp implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player player){
             if(args.length != 0) {
-                if(player.hasPermission("ffa.warps." + args[0].toLowerCase())){
+                if(player.hasPermission("ffa.warps." + args[0].toLowerCase()) || player.hasPermission("*")){
                     if(locations.checkLocation(args[0].toLowerCase())){
                         player.teleport(locations.getLocation(args[0]));
                         sender.sendMessage(ChatColor.GRAY + "Successfully warped to " + ChatColor.RED + args[0].toLowerCase());

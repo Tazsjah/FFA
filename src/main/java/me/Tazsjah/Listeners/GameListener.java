@@ -23,6 +23,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -135,18 +137,37 @@ public class GameListener implements Listener {
         }
     }
 
+    public String health(Player player) {
+        double health1 = player.getHealth();
+        DecimalFormat df = new DecimalFormat("0.00");
+        df.setRoundingMode(RoundingMode.DOWN);
+        String health2 = df.format(health1);
+        return health2;
+    }
+
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
+        data.currentStreak.replace(event.getEntity().getUniqueId(), 0);
+        data.addStat(event.getEntity(), "death");
+        data.updateScoreboard(event.getEntity());
+
         if(config.getInv("clear-inventory")) {
             event.getEntity().getInventory().clear();
         }
 
-        data.currentStreak.replace(event.getEntity().getUniqueId(), 0);
-
         if(playerKiller.containsKey(event.getEntity().getUniqueId())){
-            if(crystalKiller.get(playerKiller.get(event.getEntity().getUniqueId())) == null) {return;}
+            if(crystalKiller.get(playerKiller.get(event.getEntity().getUniqueId())) == null) {
+                return;
+            }
 
             Player killer = Bukkit.getPlayer(crystalKiller.get(playerKiller.get(event.getEntity().getUniqueId())));
+
+            if(killer == killer) {
+                event.setDeathMessage(msgs.get("death-message").replace("$victim", event.getEntity().getName()));
+                data.updateScoreboard(event.getEntity());
+                return;
+            }
+
             playerKiller.remove(event.getEntity());
             crystalKiller.remove(playerKiller.get(event.getEntity().getUniqueId()));
             if(killer == event.getEntity()) {return;}
@@ -157,10 +178,9 @@ public class GameListener implements Listener {
                 killer.getInventory().addItem(arrow);
             }
 
-            data.addStat(event.getEntity(), "death");
             data.addStat(killer, "kill");
             data.addStat(killer, "streak");
-            event.setDeathMessage(msgs.killMsg(event.getEntity(), killer, killer.getHealth()));
+            event.setDeathMessage(msgs.killMsg(event.getEntity(), killer, health(killer)));
             utils.heal(killer);
             cause.remove(event.getEntity().getUniqueId());
 
@@ -173,6 +193,12 @@ public class GameListener implements Listener {
         if(regularKiller.containsKey(event.getEntity().getUniqueId())) {
             Player killer = Bukkit.getPlayer(regularKiller.get(event.getEntity().getUniqueId()));
 
+            if(killer == killer) {
+                event.setDeathMessage(msgs.get("death-message").replace("$victim", event.getEntity().getName()));
+                data.updateScoreboard(event.getEntity());
+                return;
+            }
+
             regularKiller.remove(event.getEntity().getUniqueId());
 
             if(regularKiller.get(event.getEntity()) == event.getEntity().getUniqueId()) {return;}
@@ -183,10 +209,9 @@ public class GameListener implements Listener {
                 killer.getInventory().addItem(arrow);
             }
 
-            data.addStat(event.getEntity(), "death");
             data.addStat(killer, "kill");
             data.addStat(killer, "streak");
-            event.setDeathMessage(msgs.killMsg(event.getEntity(), killer, killer.getHealth()));
+            event.setDeathMessage(msgs.killMsg(event.getEntity(), killer, health(killer)));
             utils.heal(killer);
             cause.remove(event.getEntity().getUniqueId());
 
@@ -199,17 +224,21 @@ public class GameListener implements Listener {
 
         if(cause.get(event.getEntity().getUniqueId()) == EntityDamageEvent.DamageCause.VOID) {
             event.setDeathMessage(msgs.voidMsg(event.getEntity()));
-            data.addStat(event.getEntity(), "death");
             cause.remove(event.getEntity().getUniqueId());
             data.updateScoreboard(event.getEntity());
+            return;
         }
 
         if(cause.get(event.getEntity().getUniqueId()) == EntityDamageEvent.DamageCause.FALL) {
             event.setDeathMessage(msgs.fallMsg(event.getEntity()));
-            data.addStat(event.getEntity(), "death");
             cause.remove(event.getEntity().getUniqueId());
             data.updateScoreboard(event.getEntity());
+            return;
         }
+
+        event.setDeathMessage(msgs.get("death-message").replace("$victim", event.getEntity().getName()));
+        data.updateScoreboard(event.getEntity());
+
     }
 
     @EventHandler

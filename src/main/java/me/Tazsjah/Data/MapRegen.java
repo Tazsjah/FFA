@@ -24,12 +24,15 @@ public class MapRegen {
 
     Combat combat;
 
-    public MapRegen(Config config, Messages msgs, Locations locs, Combat combat, PlayerUtils util) {
+    Kits kits;
+
+    public MapRegen(Config config, Messages msgs, Locations locs, Combat combat, PlayerUtils util, Kits kits) {
         this.config = config;
         this.msgs = msgs;
         this.locs = locs;
         this.combat = combat;
         this.util = util;
+        this.kits = kits;
     }
 
     public List<Block> placed = new ArrayList<>();
@@ -74,6 +77,10 @@ public class MapRegen {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.teleport(locs.getLocation("spawn"));
             util.heal(player);
+            player.getPlayer().getInventory().clear();
+            if(kits.data.isKitSet(player)) {
+                kits.getPlayerKit(player, kits.data.mainKit(player));
+            }
         }
     }
 

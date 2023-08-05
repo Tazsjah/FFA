@@ -36,7 +36,7 @@ public class Spawn implements CommandExecutor, Listener {
     public boolean onCommand(CommandSender sender, Command command, String arg, String[] args) {
         if(sender instanceof Player player) {
             if(combat.inCombat(player)) {
-                if(!player.hasPermission("ffa.bypass")) {player.sendMessage(msgs.get("in-combat"));return true;}
+                if(!player.hasPermission("ffa.bypass") || player.hasPermission("*")) {player.sendMessage(msgs.get("in-combat"));return true;}
 
                 if (locations.checkLocation("spawn")) {
                     ((Player) sender).teleport(locations.getLocation("spawn"));

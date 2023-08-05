@@ -35,8 +35,8 @@ public class FFA extends JavaPlugin {
         PlayerUtils utils = new PlayerUtils();
         Combat combat = new Combat(config, messages);
         Spawn spawn = new Spawn(locations, messages, combat, utils);
-        Kits kits = new Kits(messages);
-        MapRegen mapregen = new MapRegen(config, messages, locations, combat, utils);
+        Kits kits = new Kits(config, messages, stats);
+        MapRegen mapregen = new MapRegen(config, messages, locations, combat, utils, kits);
         Inventory inv = new Inventory(messages);
 
 
@@ -61,8 +61,9 @@ public class FFA extends JavaPlugin {
         Bukkit.getPluginCommand("delkit").setExecutor(new DelKit(kits));
         Bukkit.getPluginCommand("setinv").setExecutor(new SetInv(inv));
         Bukkit.getPluginCommand("openinv").setExecutor(new OpenInv(inv));
-        Bukkit.getPluginCommand("reset").setExecutor(new Reset(kits));
+        Bukkit.getPluginCommand("remkit").setExecutor(new RemKit(kits));
         Bukkit.getPluginCommand("savekit").setExecutor(new SaveKit(kits));
+        Bukkit.getPluginCommand("setkit").setExecutor(new SetKit(kits));
 
         // Misc
 

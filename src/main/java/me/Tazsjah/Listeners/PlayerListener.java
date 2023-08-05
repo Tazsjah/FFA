@@ -4,6 +4,7 @@ import me.Tazsjah.Data.*;
 import me.Tazsjah.Utils.PlayerUtils;
 import me.Tazsjah.Utils.Sidebar;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,8 +57,8 @@ public class PlayerListener implements Listener {
 
         stats.updateScoreboard(event.getPlayer());
 
-        if(kits.ownKit(event.getPlayer())) {
-            kits.getPlayerKit(event.getPlayer());
+        if(stats.isKitSet(event.getPlayer())) {
+            kits.getPlayerKit(event.getPlayer(), stats.mainKit(event.getPlayer()));
         }
 
         if(!event.getPlayer().hasPermission("ffa.admin")){
@@ -80,9 +81,10 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
-        if(kits.ownKit(event.getPlayer())) {
-            kits.getPlayerKit(event.getPlayer());
-            event.setRespawnLocation(locations.getLocation("spawn"));
+        if(stats.isKitSet(event.getPlayer())) {
+            kits.getPlayerKit(event.getPlayer(), stats.mainKit(event.getPlayer()));
+        } else {
+            event.getPlayer().sendMessage(ChatColor.GRAY + "You do not have a main kit set. Please use /setkit");
         }
     }
 

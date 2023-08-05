@@ -2,6 +2,7 @@
 kill-message: "&c$victim &7was killed by &c$killer &8(&c$left♥&8)"
 void-message: "&c$victim &7was killed by the void"
 fall-message: "&c$victim &7fell to their death"
+death-message: "&c$victim &7died."
 
 # Join & Leave message. Variable is $player
 join-message: "&c$player &7joined the game"

@@ -23,7 +23,7 @@ public class Messages {
         return (List<Integer>) msgs.get("streak-ms");
     }
 
-    public String killMsg(Player v, Player k, Double f) { // Variables are $victim | $left | $killer
+    public String killMsg(Player v, Player k, String s) { // Variables are $victim | $left | $killer
         return ChatColor.translateAlternateColorCodes('&',msgs.getString("kill-message").replace("$victim", v.getName()).replace("$killer", k.getName()).replace("$left", f.toString()));
     }
 

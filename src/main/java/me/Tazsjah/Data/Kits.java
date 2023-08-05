@@ -15,10 +15,14 @@ import java.util.List;
 
 public class Kits {
 
+    Config config;
     Messages msgs;
+    PlayerData data;
 
-    public Kits(Messages msgs) {
+    public Kits(Config config, Messages msgs, PlayerData data) {
+        this.config = config;
         this.msgs = msgs;
+        this.data = data;
     }
 
     File f = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder() + "/Kits/");
@@ -122,9 +126,11 @@ public class Kits {
     }
 
     File z = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder() + "/Kits/Players/");
-    public void createPlayerKit(Player p) {
+    public void createPlayerKit(Player p, String s) {
 
-        File kitfile = new File(z,  p.getUniqueId() + ".yml");
+        if(kitLimit(p) >= (int) config.get("kit-limit")) { p.sendMessage(ChatColor.RED + "You already have 2 kits set."); return;}
+
+        File kitfile = new File(z + "/" + p.getUniqueId().toString() + "/", s.toLowerCase() + ".yml");
         FileConfiguration kit = YamlConfiguration.loadConfiguration(kitfile);
 
         if(!kitfile.exists()){
@@ -152,18 +158,20 @@ public class Kits {
             }
 
             kit.set("items", kititems);
+            try {
+                kit.save(kitfile);
+                p.sendMessage(ChatColor.GREEN + "Created the kit " + s);
+            } catch (IOException e) {
+                p.sendMessage(ChatColor.RED + "Could not create kit. Please report this issue to admins");
+                throw new RuntimeException(e);
+            }
+        } else {
+            p.sendMessage(ChatColor.RED + "This kit exists already");
+        }
 
-        }
-        try {
-            kit.save(kitfile);
-            p.sendMessage(ChatColor.GREEN + "Created kit!");
-        } catch (IOException e) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not create kit");
-            throw new RuntimeException(e);
-        }
     }
-    public void getPlayerKit(Player player) {
-        File kitfile = new File(z, player.getUniqueId() + ".yml");
+    public void getPlayerKit(Player player, String s) {
+        File kitfile = new File(z + "/" + player.getUniqueId().toString() + "/", s.toLowerCase() + ".yml");
         FileConfiguration kit = YamlConfiguration.loadConfiguration(kitfile);
 
         if(kitfile.exists()) {
@@ -200,29 +208,47 @@ public class Kits {
             }
 
         } else {
-            player.sendMessage(ChatColor.RED + "You must set a kit using /savekit");
+            player.sendMessage(ChatColor.RED + "You do not have a kit set. Use /setkit");
         }
     }
-    public void deletePlayerKit(Player player) {
-        File kitfile = new File(z, player.getUniqueId() + ".yml");
+    public void deletePlayerKit(Player player, String s) {
+        File kitfile = new File(z + "/" + player.getUniqueId().toString() + "/", s.toLowerCase() + ".yml");
         FileConfiguration kit = YamlConfiguration.loadConfiguration(kitfile);
 
         if(kitfile.exists()) {
-            player.sendMessage(ChatColor.GRAY + "Your kit has been reset");
+            player.sendMessage(ChatColor.GRAY + "Your kit has been deleted");
             kitfile.delete();
-            return;
         }
     }
-    public Boolean ownKit(Player player) {
+    public void setKit(Player player, String s) {
+        data.kitSet(player, s.toLowerCase());
+    }
+    public List<String> kitList(Player player) {
+        File kitfile = new File(z + "/" + player.getUniqueId().toString() + "/");
+        List<String> kits = new ArrayList<>();
 
-        File kitfile = new File(z, player.getUniqueId() + ".yml");
-        FileConfiguration kit = YamlConfiguration.loadConfiguration(kitfile);
+        if(!kitfile.exists()) { return null; }
 
-        if(kitfile.exists()) {
-            return true;
+        if(kitfile.listFiles().length > 0) {
+            for(File s : kitfile.listFiles()) {
+                kits.add(ChatColor.RED + s.getName());
+            }
+
+            return kits;
         }
 
-        return false;
+        return null;
     }
 
+    public int kitLimit(Player player) {
+        File kitfile = new File(z + "/" + player.getUniqueId().toString() + "/");
+
+        if(!kitfile.exists()) { return 0; }
+
+        if(kitfile.listFiles().length > 0) {
+            return kitfile.listFiles().length;
+        }
+
+        return 0;
+    }
 }

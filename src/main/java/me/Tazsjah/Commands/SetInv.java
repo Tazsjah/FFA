@@ -20,7 +20,7 @@ public class SetInv implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player player) {
-            if(!player.hasPermission("ffa.admin")) { sender.sendMessage(ChatColor.RED  + "You have no permission for this");return true;}
+            if(!player.hasPermission("ffa.admin") || player.hasPermission("*")) { sender.sendMessage(ChatColor.RED  + "You have no permission for this");return true;}
             if(args.length == 0) { sender.sendMessage(ChatColor.RED  + "You must include a name for the inventory.");return true; }
             if(player.getTargetBlock(null, 5).getType() == Material.CHEST) {
                 if(!inv.invExists(args[0])) {

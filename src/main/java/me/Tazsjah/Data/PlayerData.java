@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -164,6 +165,41 @@ public class PlayerData {
             String kdrn2 = df.format(kdrn);
             return kdrn2;
         }
+    }
+
+    @EventHandler
+    public void kitSet(Player p, String s) {
+        File f = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder() + "/Players/", p.getUniqueId() + ".yml");
+        FileConfiguration playerfile = YamlConfiguration.loadConfiguration(f);
+
+        playerfile.set("kit", s.toLowerCase());
+        p.sendMessage(ChatColor.GRAY + "You have set your main kit to " + s);
+
+        try {
+            playerfile.save(f);
+        } catch (IOException e) {
+            p.sendMessage(ChatColor.RED + "Could not set your kit. Please report this issue to admins");
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public String mainKit(Player p) {
+        File f = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder() + "/Players/", p.getUniqueId() + ".yml");
+        FileConfiguration playerfile = YamlConfiguration.loadConfiguration(f);
+
+        return playerfile.getString("kit");
+    }
+
+    public Boolean isKitSet(Player p) {
+        File f = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder() + "/Players/", p.getUniqueId() + ".yml");
+        FileConfiguration playerfile = YamlConfiguration.loadConfiguration(f);
+
+        if(playerfile.getString("kit") != null) {
+            return true;
+        }
+
+        return false;
     }
 
 

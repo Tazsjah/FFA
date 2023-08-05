@@ -19,7 +19,7 @@ public class SetWarp implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player player) {
-            if(player.hasPermission("ffa.admin")) {
+            if(player.hasPermission("ffa.admin") || player.hasPermission("*")) {
                 if(args.length != 0) {
                     locations.setLocation(((Player) sender).getPlayer(), args[0], ((Player) sender).getLocation());
                 } else {

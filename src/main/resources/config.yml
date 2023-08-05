@@ -36,3 +36,6 @@ ignored-placed:
 
 # Combat Log ( In seconds )
 combat-time: 7
+
+# Kit limit per user
+kit-limit: 2

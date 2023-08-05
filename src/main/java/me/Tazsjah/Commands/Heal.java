@@ -19,7 +19,7 @@ public class Heal implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(sender.hasPermission("ffa.heal")) {
+        if(sender.hasPermission("ffa.heal") || sender.hasPermission("*")) {
             if(args.length != 0) {
                 if(Bukkit.getPlayer(args[0]) != null){
                     utils.heal(Bukkit.getPlayer(args[0]));
