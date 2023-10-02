@@ -25,8 +25,8 @@ public class Combat {
 //        s = (String) config.get("f");
 //    }
 
-    HashMap<UUID, Integer> time = new HashMap<>();
-    HashMap<UUID, Boolean> inCombat = new HashMap<>();
+    public HashMap<UUID, Integer> time = new HashMap<>();
+    public HashMap<UUID, Boolean> inCombat = new HashMap<>();
 
     private void resetCombatTimers() {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -34,25 +34,30 @@ public class Combat {
         }
     }
 
-    private void startTimer(Player p) {
+    public void startTimer() {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if(time.get(p.getUniqueId()) != null) {
-                    if(time.get(p.getUniqueId()) > 0) {
-                        inCombat.replace(p.getUniqueId(), true);
-                        int x = time.get(p.getUniqueId());
-                        time.replace(p.getUniqueId(), x - 1);
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    if(time.get(p.getUniqueId()) != null) {
+                        if(inCombat.replace(p.getUniqueId(), false)) {
+                            if (time.get(p.getUniqueId()) > 0) {
+                                inCombat.replace(p.getUniqueId(), true);
+                                int x = time.get(p.getUniqueId());
+                                time.replace(p.getUniqueId(), x - 1);
+                            } else {
+                                inCombat.replace(p.getUniqueId(), false);
+                                time.remove(p.getUniqueId());
+                                p.sendMessage(msgs.get("combat-untag"));
+                            }
+                        } else {
+                            inCombat.replace(p.getUniqueId(), false);
+                            time.remove(p.getUniqueId());
+                        }
                     } else {
                         inCombat.replace(p.getUniqueId(), false);
                         time.remove(p.getUniqueId());
-                        p.sendMessage(msgs.get("combat-untag"));
-                        this.cancel();
                     }
-                } else {
-                    inCombat.replace(p.getUniqueId(), false);
-                    time.remove(p.getUniqueId());
-                    this.cancel();
                 }
             }
         }.runTaskTimer(Bukkit.getPluginManager().getPlugin("FFA"), 0, 20);
@@ -60,18 +65,17 @@ public class Combat {
 
     public void tag(Player player) {
 
-        player.sendMessage(msgs.get("combat-tag"));
-
         if(inCombat.get(player.getUniqueId()) == null) {
-            time.put(player.getUniqueId(), (Integer) config.get("combat-time"));
             inCombat.put(player.getUniqueId(), true);
-            startTimer(player);
+            time.put(player.getUniqueId(), (Integer) config.get("combat-time"));
+            player.sendMessage(msgs.get("combat-tag"));
+            return;
         }
 
         if(inCombat.get(player.getUniqueId()) == false){
             inCombat.put(player.getUniqueId(), true);
             time.put(player.getUniqueId(), (Integer) config.get("combat-time"));
-            startTimer(player);
+            player.sendMessage(msgs.get("combat-tag"));
             return;
         }
 
@@ -88,6 +92,19 @@ public class Combat {
             return true;
         }
         return false;
+    }
+
+    public void untag(Player player) {
+        if(inCombat.get(player.getUniqueId()) == null) {
+            inCombat.put(player.getUniqueId(), false);
+            time.put(player.getUniqueId(), 0);
+            player.sendMessage(msgs.get("combat-untag"));
+        }
+        if(inCombat.get(player.getUniqueId())){
+            inCombat.put(player.getUniqueId(), false);
+            time.put(player.getUniqueId(), 0);
+            player.sendMessage(msgs.get("combat-untag"));
+        }
     }
 
 }

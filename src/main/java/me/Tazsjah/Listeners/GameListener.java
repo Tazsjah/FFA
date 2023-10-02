@@ -8,17 +8,16 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.Tazsjah.Data.*;
 import me.Tazsjah.Utils.PlayerUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -36,23 +35,23 @@ public class GameListener implements Listener {
     Messages msgs;
     Config config;
     Combat combat;
+    Kits kits;
 
-    public GameListener(PlayerData data, PlayerUtils utils, Locations locations, Messages msgs, Config config, Combat combat) {
+    public GameListener(PlayerData data, PlayerUtils utils, Locations locations, Messages msgs, Config config, Combat combat, Kits kits) {
         this.data = data;
         this.utils = utils;
         this.locations = locations;
         this.msgs = msgs;
         this.config = config;
         this.combat = combat;
+        this.kits = kits;
     }
-
 
     HashMap<Entity, UUID> crystalKiller = new HashMap<Entity, UUID>();
     HashMap<Location, UUID> blockOwner = new HashMap<>();
     HashMap<UUID, Entity> playerKiller = new HashMap<UUID, Entity>();
     HashMap<UUID, UUID> regularKiller = new HashMap<>();
     HashMap<UUID, EntityDamageEvent.DamageCause> cause = new HashMap<>();
-
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -78,8 +77,6 @@ public class GameListener implements Listener {
         blockOwner.remove(event.getBlock().getLocation());
     }
 
-    WorldGuard wg = WorldGuard.getInstance();
-
     @EventHandler
     public void onHit(EntityDamageByEntityEvent event){
         if(event.getEntity() instanceof EnderCrystal){
@@ -93,22 +90,20 @@ public class GameListener implements Listener {
             }
         }
         if(event.getEntity() instanceof Player p) {
-
             LocalPlayer lp = WorldGuardPlugin.inst().wrapPlayer(p);
             RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionQuery query = container.createQuery();
 
             if(!query.testState(lp.getLocation(), lp, Flags.INVINCIBILITY)) {
-                combat.tag(p);
-
 
                 if (event.getDamager() instanceof EnderCrystal) {
                     playerKiller.put(event.getEntity().getUniqueId(), event.getDamager());
                 }
 
                 if (event.getDamager() instanceof Player) {
-                    combat.tag((Player) event.getDamager());
                     regularKiller.put(event.getEntity().getUniqueId(), event.getDamager().getUniqueId());
+                    combat.tag((Player) event.getDamager());
+                    combat.tag(p);
                 }
 
                 if (event.getDamager() instanceof Arrow) {
@@ -117,6 +112,7 @@ public class GameListener implements Listener {
 
                     regularKiller.put(event.getEntity().getUniqueId(), killer.getUniqueId());
                     combat.tag(killer);
+                    combat.tag(p);
                 }
             }
 
@@ -145,15 +141,19 @@ public class GameListener implements Listener {
         return health2;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent event){
+        if(event.getDeathMessage().toLowerCase().contains("[intentional game design]") || event.getDeathMessage().toLowerCase().contains("fell out of the")){
+            event.setDeathMessage(msgs.get("death-message").replace("$victim", event.getEntity().getName()));
+        }
+
+        event.getEntity().getInventory().clear();
+
         data.currentStreak.replace(event.getEntity().getUniqueId(), 0);
         data.addStat(event.getEntity(), "death");
         data.updateScoreboard(event.getEntity());
+        combat.untag(event.getEntity());
 
-        if(config.getInv("clear-inventory")) {
-            event.getEntity().getInventory().clear();
-        }
 
         if(playerKiller.containsKey(event.getEntity().getUniqueId())){
             if(crystalKiller.get(playerKiller.get(event.getEntity().getUniqueId())) == null) {
@@ -162,7 +162,7 @@ public class GameListener implements Listener {
 
             Player killer = Bukkit.getPlayer(crystalKiller.get(playerKiller.get(event.getEntity().getUniqueId())));
 
-            if(killer == killer) {
+            if(killer == event.getEntity()) {
                 event.setDeathMessage(msgs.get("death-message").replace("$victim", event.getEntity().getName()));
                 data.updateScoreboard(event.getEntity());
                 return;
@@ -170,13 +170,7 @@ public class GameListener implements Listener {
 
             playerKiller.remove(event.getEntity());
             crystalKiller.remove(playerKiller.get(event.getEntity().getUniqueId()));
-            if(killer == event.getEntity()) {return;}
-
-            if(killer.getInventory().contains(Material.BOW)){
-                ItemStack arrow = new ItemStack(Material.ARROW);
-                arrow.setAmount(config.arrow());
-                killer.getInventory().addItem(arrow);
-            }
+            killer.playSound(killer.getLocation(), Sound.ENTITY_WARDEN_DEATH, 2, 2);
 
             data.addStat(killer, "kill");
             data.addStat(killer, "streak");
@@ -193,21 +187,14 @@ public class GameListener implements Listener {
         if(regularKiller.containsKey(event.getEntity().getUniqueId())) {
             Player killer = Bukkit.getPlayer(regularKiller.get(event.getEntity().getUniqueId()));
 
-            if(killer == killer) {
+            if(killer == event.getEntity()) {
                 event.setDeathMessage(msgs.get("death-message").replace("$victim", event.getEntity().getName()));
                 data.updateScoreboard(event.getEntity());
                 return;
             }
 
             regularKiller.remove(event.getEntity().getUniqueId());
-
-            if(regularKiller.get(event.getEntity()) == event.getEntity().getUniqueId()) {return;}
-
-            if(killer.getInventory().contains(Material.BOW)){
-                ItemStack arrow = new ItemStack(Material.ARROW);
-                arrow.setAmount(config.arrow());
-                killer.getInventory().addItem(arrow);
-            }
+            killer.playSound(killer.getLocation(), Sound.ENTITY_WARDEN_DEATH, 2, 2);
 
             data.addStat(killer, "kill");
             data.addStat(killer, "streak");
@@ -254,6 +241,5 @@ public class GameListener implements Listener {
         }
         event.setQuitMessage(msgs.leaveMsg(event.getPlayer()));
     }
-
 
 }

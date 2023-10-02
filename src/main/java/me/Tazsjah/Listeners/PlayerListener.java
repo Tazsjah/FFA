@@ -11,8 +11,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 
 public class PlayerListener implements Listener {
@@ -47,6 +50,7 @@ public class PlayerListener implements Listener {
         utils.heal(event.getPlayer());
         event.getPlayer().getInventory().clear();
         event.getPlayer().setGameMode(GameMode.valueOf(config.gamemode()));
+        event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0));
 
         int in = config.title("in") * 20;
         int stay = config.title("stay") * 20;
@@ -85,6 +89,25 @@ public class PlayerListener implements Listener {
             kits.getPlayerKit(event.getPlayer(), stats.mainKit(event.getPlayer()));
         } else {
             event.getPlayer().sendMessage(ChatColor.GRAY + "You do not have a main kit set. Please use /setkit");
+        }
+
+        Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("FFA"), new Runnable() {
+            @Override
+            public void run() {
+                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0));
+            }
+        }, 2);
+    }
+
+    @EventHandler
+    public void onResurrect(EntityResurrectEvent event) {
+        if(event.getEntity() instanceof Player player) {
+            Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("FFA"), new Runnable() {
+                @Override
+                public void run() {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0));
+                }
+            }, 2);
         }
     }
 

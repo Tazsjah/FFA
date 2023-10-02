@@ -148,6 +148,9 @@ public class Kits {
             if(p.getInventory().getBoots() != null) {
                 kit.set("boots", p.getInventory().getBoots());
             }
+            if(p.getInventory().getItemInOffHand() != null) {
+                kit.set("off-hand", p.getInventory().getItemInOffHand());
+            }
 
             Inventory inv = p.getInventory();
             ArrayList<ItemStack> kititems = new ArrayList<ItemStack>();
@@ -196,6 +199,11 @@ public class Kits {
                 player.getInventory().setBoots(boots);
             }
 
+            if(kit.get("off-hand") != null) {
+                ItemStack offhand = (ItemStack) kit.get("off-hand");
+                player.getInventory().setItemInOffHand(offhand);
+            }
+
             if(kit.get("items") != null) {
                 List<ItemStack> items = (List<ItemStack>) kit.getList("items");
                 for(ItemStack i : items) {
@@ -221,7 +229,14 @@ public class Kits {
         }
     }
     public void setKit(Player player, String s) {
-        data.kitSet(player, s.toLowerCase());
+        if(data.mainKit(player) != s.toLowerCase()) {
+            data.kitSet(player, s.toLowerCase());
+        } else {
+            player.sendMessage(ChatColor.RED + "You already have this kit set");
+        }
+    }
+    public void clearKit(Player player) {
+        data.clearKit(player);
     }
     public List<String> kitList(Player player) {
         File kitfile = new File(z + "/" + player.getUniqueId().toString() + "/");
@@ -231,7 +246,7 @@ public class Kits {
 
         if(kitfile.listFiles().length > 0) {
             for(File s : kitfile.listFiles()) {
-                kits.add(ChatColor.RED + s.getName());
+                kits.add(ChatColor.RED + s.getName().toLowerCase());
             }
 
             return kits;
@@ -239,7 +254,6 @@ public class Kits {
 
         return null;
     }
-
     public int kitLimit(Player player) {
         File kitfile = new File(z + "/" + player.getUniqueId().toString() + "/");
 

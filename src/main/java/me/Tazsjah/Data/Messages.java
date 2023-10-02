@@ -24,7 +24,7 @@ public class Messages {
     }
 
     public String killMsg(Player v, Player k, String s) { // Variables are $victim | $left | $killer
-        return ChatColor.translateAlternateColorCodes('&',msgs.getString("kill-message").replace("$victim", v.getName()).replace("$killer", k.getName()).replace("$left", f.toString()));
+        return ChatColor.translateAlternateColorCodes('&',msgs.getString("kill-message").replace("$victim", v.getName()).replace("$killer", k.getName()).replace("$left", s));
     }
 
     public String joinMsg(Player player) {

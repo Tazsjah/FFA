@@ -11,7 +11,7 @@ streak-ms:
   - 100
 
 # Is hunger enabled ?
-hunger: false
+hunger: true
 
 # How many arrows are we giving the arrow kit back
 arrows: 20
@@ -24,15 +24,18 @@ clear-inventory: true
 
 # Join Title Message Time
 in: 1
-stay: 7
+stay: 4
 out: 1
 
 # Map Regen Time
-regen-map: 300
+regen-map: 30
 
 # Ignore these blocks for placement
 ignored-placed:
   - RESPAWN_ANCHOR
+
+ignored-explosion:
+  - GLOWSTONE
 
 # Combat Log ( In seconds )
 combat-time: 7

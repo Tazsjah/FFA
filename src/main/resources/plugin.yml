@@ -1,7 +1,7 @@
 main: me.Tazsjah.FFA
 author: Tazsjah
 name: FFA
-api-version: 1.18
+api-version: 1.19
 version: 1.0.0
 depend: [WorldGuard]
 commands:
@@ -43,3 +43,5 @@ commands:
     description: Removes a kit from your kits
   setkit:
     description: Sets the main kit to spawn with
+  getkit:
+    description: Gives you a kit you own

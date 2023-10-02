@@ -2,6 +2,7 @@ package me.Tazsjah.Data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -43,6 +44,14 @@ public class Inventory {
         org.bukkit.inventory.Inventory inv = Bukkit.createInventory(null, 54, msgs.get("shop-prefix") + s.substring(0, 1).toUpperCase() + s.substring(1));
         addItems(inv, s);
         player.openInventory(inv);
+
+        if(s.contains("gear")) {
+            player.playSound(player.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 1.5f);
+        }
+
+        if(s.contains("effects")) {
+            player.playSound(player.getLocation(), Sound.BLOCK_BREWING_STAND_BREW, 1, 1.5f);
+        }
 
     }
 

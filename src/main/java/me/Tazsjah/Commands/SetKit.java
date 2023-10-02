@@ -19,7 +19,15 @@ public class SetKit implements CommandExecutor {
 
         if(sender instanceof Player player) {
             if(args.length > 0) {
-                    kits.setKit(player, args[0]);
+                if(args[0].equalsIgnoreCase("clear")) {
+                    kits.clearKit(player);
+                } else {
+                    if(kits.kitList(player).toString().contains(args[0] + ".yml")) {
+                        kits.setKit(player, args[0]);
+                    } else {
+                        sender.sendMessage(ChatColor.GRAY + "You do not own a kit named " + ChatColor.RED + args[0].toLowerCase());
+                    }
+                }
             } else {
                 player.sendMessage(ChatColor.RED + "You must include what kit to set as your main");
                 if(kits.kitList(player) == null) {

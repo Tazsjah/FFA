@@ -202,5 +202,25 @@ public class PlayerData {
         return false;
     }
 
+    public void clearKit(Player player) {
+        File f = new File(Bukkit.getPluginManager().getPlugin("FFA").getDataFolder() + "/Players/", player.getUniqueId() + ".yml");
+        FileConfiguration playerfile = YamlConfiguration.loadConfiguration(f);
+
+        if(playerfile.getString("kit") != null) {
+            playerfile.set("kit", null);
+            player.sendMessage(ChatColor.GRAY + "You have cleared your main kit");
+
+            try {
+                playerfile.save(f);
+            } catch (IOException e) {
+                player.sendMessage(ChatColor.RED + "Could not clear your kit. Please report this issue to admins");
+                throw new RuntimeException(e);
+            }
+        } else {
+            player.sendMessage(ChatColor.RED + "No main kit found");
+        }
+
+    }
+
 
 }

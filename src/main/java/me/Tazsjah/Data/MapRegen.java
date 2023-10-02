@@ -1,5 +1,11 @@
 package me.Tazsjah.Data;
 
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.Tazsjah.Utils.PlayerUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -8,6 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -75,11 +83,20 @@ public class MapRegen {
 
     public void warpPlayers() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.teleport(locs.getLocation("spawn"));
-            util.heal(player);
-            player.getPlayer().getInventory().clear();
-            if(kits.data.isKitSet(player)) {
-                kits.getPlayerKit(player, kits.data.mainKit(player));
+            LocalPlayer lp = WorldGuardPlugin.inst().wrapPlayer(player);
+            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
+
+            Location loc = player.getLocation();
+            loc.setY(116);
+
+            if(!query.testState(lp.getLocation(), lp, Flags.INVINCIBILITY)) {
+                player.teleport(loc);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0));
+                if(kits.data.isKitSet(player)) {
+                    player.getPlayer().getInventory().clear();
+                    kits.getPlayerKit(player, kits.data.mainKit(player));
+                }
             }
         }
     }
@@ -92,6 +109,7 @@ public class MapRegen {
                     mapTime--;
                     updateActionbar();
                 } else {
+                    updateActionbar();
                     warpPlayers();
                     restoreBlocks();
                     mapTime = (int) config.get("regen-map");
@@ -102,14 +120,7 @@ public class MapRegen {
 
     public void updateActionbar() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(combat.inCombat(player)) {
-                int x = combat.time.get(player.getUniqueId()) + 1;
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                        new TextComponent(msgs.get("action-bar-combat").replace("$time", x + "") + msgs.getActionbar(mapTime)));
-                return;
-            }
-
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(msgs.getActionbar(mapTime)));
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(msgs.getActionbar(mapTime)));
         }
     }
 

@@ -43,7 +43,7 @@ public class FFA extends JavaPlugin {
         // Register Events
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(config, messages, stats, utils, locations, bar, kits, combat), this);
-        Bukkit.getPluginManager().registerEvents(new GameListener(stats, utils, locations, messages, config, combat), this);
+        Bukkit.getPluginManager().registerEvents(new GameListener(stats, utils, locations, messages, config, combat, kits), this);
         Bukkit.getPluginManager().registerEvents(spawn, this);
         Bukkit.getPluginManager().registerEvents(new MapListener(mapregen, locations), this);
 
@@ -64,12 +64,14 @@ public class FFA extends JavaPlugin {
         Bukkit.getPluginCommand("remkit").setExecutor(new RemKit(kits));
         Bukkit.getPluginCommand("savekit").setExecutor(new SaveKit(kits));
         Bukkit.getPluginCommand("setkit").setExecutor(new SetKit(kits));
+        Bukkit.getPluginCommand("getkit").setExecutor(new GetKit(kits));
 
         // Misc
 
         Bukkit.getConsoleSender().sendMessage(ChatColor.AQUA + "Enabling the FFA plugin by Tazsjah");
         stats.initializeAll();
         mapregen.startMapTime();
+        combat.startTimer();
         
     }
 
