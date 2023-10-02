@@ -1,9 +1,0 @@
-name: Dropper
-version: '${version}'
-main: mcheroes.dropper.DropperPlugin
-api-version: '1.19'
-authors:
-  - byteful
-description: The dropper minigame plugin for the Minecraft Heroes event.
-depend:
-  - MCHeroes
